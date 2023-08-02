@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
-@CrossOrigin(origins = "http://front-server.com") //cors정책 -> 이게 없으면 통신이 안됨.
+@CrossOrigin(origins = "*") //cors정책 -> 이게 없으면 통신이 안됨.
 @RestController
+@RequestMapping("/trains")
 public class TrainController {
 
     private final TrainService trainService;
@@ -22,7 +23,7 @@ public class TrainController {
     }
 
 
-    @GetMapping("/trains")
+    @GetMapping("/congestion")
     public ResponseEntity<List<String>> getTrainInfo(@RequestParam String stationCode,@RequestParam String dow, @RequestParam String hh) {
         try {
             TrainResponseDto trainResponseDto = new TrainResponseDto(stationCode, dow, hh);
