@@ -34,6 +34,7 @@ public class TrainService {
 
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("GET");
+
             httpURLConnection.setRequestProperty("Content-type", "application/json");
             httpURLConnection.setRequestProperty("appkey", "GIus98D87O1NAVDh5d0iB7BRUTtA7NX77DbSioES");
 
