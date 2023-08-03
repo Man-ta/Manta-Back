@@ -2,6 +2,7 @@ package com.manta.Manta.controller;
 
 import com.manta.Manta.dto.CongestionResponseDto;
 import com.manta.Manta.service.CongestionService;
+import com.manta.Manta.service.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,27 +10,26 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-// 실시간 장소 혼잡도
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/place")
-public class CongestionController {
+public class PlaceController {
 
-    private final CongestionService congestionService;
 
+    private final PlaceService placeService;
+    // [데이터 제공 가능 장소] poiId를 이용해 혼잡도 구할 수 있을 것으로 예상
     @Autowired
-    public CongestionController(CongestionService congestionService) {
-        this.congestionService=congestionService;
+    public PlaceController(PlaceService placeService) {
+        this.placeService=placeService;
     }
 
 
-    @GetMapping("/congestion")
-    public ResponseEntity<List<String>> getTrainInfo(@RequestParam String poiId) {
+    @GetMapping("/data")
+    public ResponseEntity<List<String>> getPlaceInfo() {
         try {
-            CongestionResponseDto congestionResponseDto=new CongestionResponseDto(poiId);
-            congestionResponseDto.setPoiId(poiId);
-
-            List<String> placeConList = congestionService.placeConInfo(congestionResponseDto);
+            
+            List<String> placeConList =placeService.placeInfo();
             return new ResponseEntity<>(placeConList, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -37,3 +37,4 @@ public class CongestionController {
     }
 
 }
+

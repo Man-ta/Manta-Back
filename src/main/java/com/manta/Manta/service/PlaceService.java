@@ -15,8 +15,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
-// 데이터 제공 가능 장소
-//poi_Id를 통해 혼잡도를 파악 할 수 있음
+
 @Service
 @CrossOrigin(origins = "*")
 public class PlaceService {
@@ -26,13 +25,14 @@ public class PlaceService {
         this.objectMapper = objectMapper;
     }
 
-    public List<String> placeConInfo(CongestionResponseDto congestionResponseDto) throws IOException {
+    public List<String> placeInfo() throws IOException {
+        // [데이터 제공 가능 장소] poiId를 이용해 혼잡도 구할 수 있을 것으로 예상
+        //데이터 정상적으로 넘어가지 않아 다시 시도해볼 예정
         List<String> placeList = new ArrayList<>();
 
         try {
-            String poiId = congestionResponseDto.getPoiId();
 
-            String apiUrl = ("https://apis.openapi.sk.com/puzzle/pois/" + poiId);
+            String apiUrl = ("https://apis.openapi.sk.com/puzzle/pois");
 
             String fullUrl = apiUrl;
             System.out.println("주소:" + fullUrl);
@@ -56,8 +56,10 @@ public class PlaceService {
             String poi_Id = jsonNode.path("contents").path("poiId").asText();
             String poiName = jsonNode.path("contents").path("poiName").asText();
 
+
             placeList.add(poi_Id);
             placeList.add(poiName);
+
 
         } catch (IOException e) {
             throw new RuntimeException(e);
