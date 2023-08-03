@@ -23,19 +23,20 @@ public class TrainController {
     }
 
 
-    @GetMapping("/congestion")
-    public ResponseEntity<List<String>> getTrainInfo(@RequestParam String stationCode,@RequestParam String dow, @RequestParam String hh) {
-        try {
-            TrainResponseDto trainResponseDto = new TrainResponseDto(stationCode, dow, hh);
-            trainResponseDto.setStationCode(stationCode);
-            trainResponseDto.setDow(dow);
-            trainResponseDto.setHh(hh);
+        @GetMapping("/congestion")
+        public ResponseEntity<List<String>> getTrainInfo(@RequestParam String stationCode,@RequestParam String dow, @RequestParam String hh) {
+            try {
+                TrainResponseDto trainResponseDto = new TrainResponseDto(stationCode, dow, hh);
+                trainResponseDto.setStationCode(stationCode);
+                trainResponseDto.setDow(dow);
+                trainResponseDto.setHh(hh);
 
-            List<String> trainInfoList = trainService.getTrainInfo(trainResponseDto);
-            return new ResponseEntity<>(trainInfoList, HttpStatus.OK);
-        } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+                List<String> trainInfoList = trainService.getTrainInfo(trainResponseDto);
+                return new ResponseEntity<>(trainInfoList, HttpStatus.OK);
+            } catch (IOException e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
-    }
 
-}
+    }

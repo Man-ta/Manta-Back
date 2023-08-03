@@ -1,6 +1,10 @@
 package com.manta.Manta.service;
 
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manta.Manta.dto.TrainResponseDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -19,6 +23,14 @@ import java.util.List;
 @CrossOrigin(origins = "*") //cors정책 -> 이게 없으면 통신이 안됨.
 
 public class TrainService {
+//    @Autowired
+//    TrainResponseDto trainResponseDto;
+    private final ObjectMapper objectMapper; // Jackson ObjectMapper 주입
+
+    @Autowired
+    public TrainService(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     public List<String> getTrainInfo(TrainResponseDto trainResponseDto) throws IOException {
         List<String> trainInfoList = new ArrayList<>();
@@ -28,11 +40,9 @@ public class TrainService {
 
             String apiUrl = ("https://apis.openapi.sk.com/puzzle/subway/congestion/stat/car/stations/" + stationCode);
             String dow = trainResponseDto.getDow();
-            System.out.println("dow :" + dow);
-
             String hh = trainResponseDto.getHh();
 
-            String parameter ="?dow=" + dow + "&hh=" + hh;
+            String parameter ="?dow=" + dow + "&hh=" + hh ;
             String fullUrl = apiUrl + parameter;
             System.out.println("주소:" + fullUrl);
 
@@ -48,46 +58,31 @@ public class TrainService {
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             System.out.println(response.body());
 
-            // HttpURLConnection 라이브러리
-//            System.out.println("마지막 주소" + url);
-//            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-//            httpURLConnection.setRequestMethod("GET");
-//            httpURLConnection.setRequestProperty("Content-type", "application/json");
-//            httpURLConnection.setRequestProperty("appkey", "GIus98D87O1NAVDh5d0iB7BRUTtA7NX77DbSioES");
-//
-//            httpURLConnection.setDoOutput(true);
-//
-//            OutputStream outputStream = httpURLConnection.getOutputStream();
-//            DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-//            dataOutputStream.writeBytes(parameter);
-//            dataOutputStream.close();
-//
-//            System.out.println("주소:" + parameter);
-//
-//
-//            int responseCode = httpURLConnection.getResponseCode();
-//
-//            InputStream inputStream;
-//            if (responseCode == 200) {
-//                inputStream = httpURLConnection.getInputStream();
-//            } else {
-//                inputStream = httpURLConnection.getErrorStream();
-//            }
-//
-//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-//            String line;
-//            StringBuilder response = new StringBuilder();
-//
-//
-//            while ((line = bufferedReader.readLine()) != null) {
-//                response.append(line);
-//            }
-//            bufferedReader.close();
-//
-//            System.out.println("JSON 응답 결과:");
-//            System.out.println(response.toString());
-//
-//            trainInfoList.add(response.toString());
+
+            // JSON 결과 파싱
+            JsonNode jsonNode = objectMapper.readTree(response.body());
+
+            // 필요한 데이터 추출
+            String subwayLine = jsonNode.path("contents").path("subwayLine").asText();
+            String stationName = jsonNode.path("contents").path("stationName").asText();
+
+            // congestionCar 값 추출
+            JsonNode statArray = jsonNode.path("contents").path("stat");
+            for (JsonNode statNode : statArray) {
+                JsonNode data = statNode.path("data");
+                for (JsonNode dataNode : data) {
+                    JsonNode congestionCarNode = dataNode.path("congestionCar");
+                    // congestionCar 값 추출하여 리스트에 추가
+                    String congestionCarValue = congestionCarNode.toString();
+                    trainInfoList.add(congestionCarValue);
+                }
+            }
+
+            trainInfoList.add(subwayLine);
+            trainInfoList.add(stationName);
+
+
+
 
         } catch (IOException e) {
             throw new RuntimeException(e);
