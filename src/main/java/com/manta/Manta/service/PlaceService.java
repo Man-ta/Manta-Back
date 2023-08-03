@@ -15,23 +15,24 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
-
+// 데이터 제공 가능 장소
+//poi_Id를 통해 혼잡도를 파악 할 수 있음
 @Service
 @CrossOrigin(origins = "*")
-public class CongestionService {
+public class PlaceService {
     private final ObjectMapper objectMapper; // Jackson ObjectMapper 주입
     @Autowired
-    public CongestionService(ObjectMapper objectMapper) {
+    public PlaceService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
     public List<String> placeConInfo(CongestionResponseDto congestionResponseDto) throws IOException {
-        List<String> placeConList = new ArrayList<>();
+        List<String> placeList = new ArrayList<>();
 
         try {
             String poiId = congestionResponseDto.getPoiId();
 
-            String apiUrl = ("https://apis.openapi.sk.com/puzzle/congestion/rltm/pois/" + poiId);
+            String apiUrl = ("https://apis.openapi.sk.com/puzzle/pois/" + poiId);
 
             String fullUrl = apiUrl;
             System.out.println("주소:" + fullUrl);
@@ -55,20 +56,8 @@ public class CongestionService {
             String poi_Id = jsonNode.path("contents").path("poiId").asText();
             String poiName = jsonNode.path("contents").path("poiName").asText();
 
-
-            // congestion 값 추출
-            JsonNode rltmArray = jsonNode.path("contents").path("rltm");
-            for (JsonNode rltmNode : rltmArray) {
-                String congestionValue = rltmNode.path("congestion").toString();
-                // congestion 값을 리스트에 추가
-                placeConList.add(congestionValue);
-            }
-
-
-            placeConList.add(poi_Id);
-            placeConList.add(poiName);
-
-
+            placeList.add(poi_Id);
+            placeList.add(poiName);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -76,7 +65,7 @@ public class CongestionService {
             throw new RuntimeException(e);
         }
 
-        return placeConList;
+        return placeList;
     }
 
 }
