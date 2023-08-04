@@ -26,10 +26,9 @@ public class PlaceController {
 
 
     @GetMapping("/data")
-    public ResponseEntity<List<String>> getPlaceInfo() {
+    public ResponseEntity<List<List<String>>> getPlaceInfo() {
         try {
-            
-            List<String> placeConList =placeService.placeInfo();
+            List<List<String>> placeConList = placeService.placeInfo();
             return new ResponseEntity<>(placeConList, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
