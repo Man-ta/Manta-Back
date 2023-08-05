@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.util.List;
 
-//사용자가 조회한 장소의 시간대별 혼잡도를 제공
+
 @RestController
 @RequestMapping("/place")
 public class HourlyPlaceController {
@@ -27,6 +27,7 @@ public class HourlyPlaceController {
 
     @GetMapping("/hourly")
     public ResponseEntity<List<List<String>>> HourlyPlaceInfo(@RequestParam String poiId, @RequestParam String date) {
+        //사용자가 조회한 장소의 시간대별 혼잡도를 제공하는 컨트롤러
         try {
             HourlyPlaceReponseDto hourlyPlaceReponseDto = new HourlyPlaceReponseDto(poiId, date);
             List<List<String>> hourlyPlaceList = hourlyPlaceService.getHourlyPlaceInfo(hourlyPlaceReponseDto);

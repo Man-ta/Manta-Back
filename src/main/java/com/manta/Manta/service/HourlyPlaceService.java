@@ -25,7 +25,7 @@ public class HourlyPlaceService {
     public HourlyPlaceService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
-
+    //사용자가 조회한 장소의 시간대별 혼잡도를 제공하는 서비스
     public List<List<String>> getHourlyPlaceInfo(HourlyPlaceReponseDto hourlyPlaceReponseDto) throws IOException {
         List<List<String>> HourlyPlaceInfoList = new ArrayList<>();
         DecimalFormat decimalFormat = new DecimalFormat("0.00000");

@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @ToString
-// 실시간 장소 혼잡도
+
 public class CongestionResponseDto {
     private String poiId;
 
