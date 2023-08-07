@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manta.Manta.dto.HourlyPlaceReponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -16,78 +18,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PlaceService {
-    private final ObjectMapper objectMapper;
-
+@CrossOrigin(origins = "*")
+public class HourlyPlaceService {
+    private final ObjectMapper objectMapper; // Jackson ObjectMapper 주입
     @Autowired
-    public PlaceService(ObjectMapper objectMapper) {
+    public HourlyPlaceService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
-
-    private String sendGetRequest(String fullUrl) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(fullUrl))
-                .header("accept", "application/json")
-                .header("Content-Type", "application/json")
-                .header("appkey", "GIus98D87O1NAVDh5d0iB7BRUTtA7NX77DbSioES")
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
-
-        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
-
-        return response.body();
-    }
-
-    public List<List<String>> placeInfo() throws IOException {
-        //데이터 제공 가능 장소 서비스
-        List<List<String>> placeList = new ArrayList<>();
-
-        try {
-            String apiUrl = "https://apis.openapi.sk.com/puzzle/pois";
-            String responseString = sendGetRequest(apiUrl);
-
-            // JSON 결과 파싱
-            JsonNode jsonNode = objectMapper.readTree(responseString);
-            System.out.println(responseString);
-
-            // 필요한 데이터 추출
-            JsonNode contentsArray = jsonNode.path("contents");
-            for (JsonNode content : contentsArray) {
-                String poi_Id = content.path("poiId").asText();
-                String poiName = content.path("poiName").asText();
-                List<String> placeInfo = new ArrayList<>();
-                placeInfo.add(poi_Id);
-                placeInfo.add(poiName);
-                placeList.add(placeInfo);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        return placeList;
-    }
-
+    //사용자가 조회한 장소의 시간대별 혼잡도를 제공하는 서비스
     public List<List<String>> getHourlyPlaceInfo(HourlyPlaceReponseDto hourlyPlaceReponseDto) throws IOException {
-        //실시간 혼잡도 제공 서비스
         List<List<String>> HourlyPlaceInfoList = new ArrayList<>();
         DecimalFormat decimalFormat = new DecimalFormat("0.00000");
 
         try {
             String poiId = hourlyPlaceReponseDto.getPoiId();
-            String apiUrl = "https://apis.openapi.sk.com/puzzle/congestion/raw/hourly/pois/" + poiId;
+
+            String apiUrl = ("https://apis.openapi.sk.com/puzzle/congestion/raw/hourly/pois/" + poiId);
             String date = hourlyPlaceReponseDto.getDate();
 
-            String parameter = "?date=" + date;
+            String parameter ="?date=" + date;
             String fullUrl = apiUrl + parameter;
             System.out.println("주소:" + fullUrl);
 
-            String responseString = sendGetRequest(fullUrl);
+            URL url = new URL(fullUrl);
+            //HttpRequest 라이브러리
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(fullUrl))
+                    .header("accept", "application/json")
+                    .header("Content-Type", "application/json")
+                    .header("appkey", "GIus98D87O1NAVDh5d0iB7BRUTtA7NX77DbSioES")
+                    .method("GET", HttpRequest.BodyPublishers.noBody())
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
 
             // JSON 결과 파싱
-            JsonNode jsonNode = objectMapper.readTree(responseString);
+            JsonNode jsonNode = objectMapper.readTree(response.body());
 
             // 필요한 데이터 추출
             String poi_Id = jsonNode.path("contents").path("poiId").asText();
