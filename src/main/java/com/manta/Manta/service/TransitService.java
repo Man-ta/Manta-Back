@@ -1,18 +1,17 @@
 package com.manta.Manta.service;
 
-import com.fasterxml.jackson.core.ObjectCodec;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manta.Manta.dto.TrainResponseDto;
+import com.manta.Manta.dto.TransitResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import java.io.*;
-import java.net.HttpURLConnection;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -21,39 +20,36 @@ import java.util.List;
 
 @Service
 @CrossOrigin(origins = "*") //cors정책 -> 이게 없으면 통신이 안됨.
-
-public class TrainService {
-//    @Autowired
-//    TrainResponseDto trainResponseDto;
+public class TransitService {
     private final ObjectMapper objectMapper; // Jackson ObjectMapper 주입
 
     @Autowired
-    public TrainService(ObjectMapper objectMapper) {
+    public TransitService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
-    public JsonNode getTrainInfo(TrainResponseDto trainResponseDto) throws IOException {
-        List<String> trainInfoList = new ArrayList<>();
+    public JsonNode transitInfo(TransitResponseDto transitResponseDto) throws IOException {
+        List<String> transitInfoList = new ArrayList<>();
 
         try {
-            String stationCode = trainResponseDto.getStationCode();
+            String startX = transitResponseDto.getStartX();
+            String startY = transitResponseDto.getStartY();
+            String endX = transitResponseDto.getEndX();
+            String endY = transitResponseDto.getEndY();
+            String searchDttm = transitResponseDto.getSearchDttm();
 
-            String apiUrl = ("https://apis.openapi.sk.com/puzzle/subway/congestion/stat/car/stations/" + stationCode);
-            String dow = trainResponseDto.getDow();
-            String hh = trainResponseDto.getHh();
+            String requestBody = String.format(
+                    "{\"startX\":\"%s\",\"startY\":\"%s\",\"endX\":\"%s\",\"endY\":\"%s\",\"lang\":0,\"format\":\"json\",\"count\":10,\"searchDttm\":\"%s\"}",
+                    startX, startY, endX, endY, searchDttm);
 
-            String parameter ="?dow=" + dow + "&hh=" + hh ;
-            String fullUrl = apiUrl + parameter;
-            System.out.println("주소:" + fullUrl);
 
-            URL url = new URL(fullUrl);
             //HttpRequest 라이브러리
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(fullUrl))
+                HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://apis.openapi.sk.com/transit/routes"))
                     .header("accept", "application/json")
-                    .header("Content-Type", "application/json")
-                    .header("appkey", "GIus98D87O1NAVDh5d0iB7BRUTtA7NX77DbSioES")
-                    .method("GET", HttpRequest.BodyPublishers.noBody())
+                    .header("content-type", "application/json")
+                    .header("appKey", "GIus98D87O1NAVDh5d0iB7BRUTtA7NX77DbSioES")
+                    .method("POST", HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             System.out.println(response.body());
@@ -70,6 +66,7 @@ public class TrainService {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
 
     }
 
