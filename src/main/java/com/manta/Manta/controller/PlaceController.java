@@ -1,5 +1,6 @@
 package com.manta.Manta.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.manta.Manta.dto.CongestionResponseDto;
 import com.manta.Manta.service.CongestionService;
 import com.manta.Manta.service.PlaceService;
@@ -24,9 +25,9 @@ public class PlaceController {
 
 
     @GetMapping("/data")
-    public ResponseEntity<List<List<String>>> getPlaceInfo() {
+    public ResponseEntity<JsonNode> getPlaceInfo() {
         try {
-            List<List<String>> placeConList = placeService.placeInfo();
+            JsonNode placeConList = placeService.placeInfo();
             return new ResponseEntity<>(placeConList, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

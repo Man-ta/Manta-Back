@@ -21,12 +21,14 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class HourlyPlaceService {
     private final ObjectMapper objectMapper; // Jackson ObjectMapper 주입
+
     @Autowired
     public HourlyPlaceService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
+
     //사용자가 조회한 장소의 시간대별 혼잡도를 제공하는 서비스
-    public List<List<String>> getHourlyPlaceInfo(HourlyPlaceReponseDto hourlyPlaceReponseDto) throws IOException {
+    public JsonNode getHourlyPlaceInfo(HourlyPlaceReponseDto hourlyPlaceReponseDto) throws IOException {
         List<List<String>> HourlyPlaceInfoList = new ArrayList<>();
         DecimalFormat decimalFormat = new DecimalFormat("0.00000");
 
@@ -36,7 +38,7 @@ public class HourlyPlaceService {
             String apiUrl = ("https://apis.openapi.sk.com/puzzle/congestion/raw/hourly/pois/" + poiId);
             String date = hourlyPlaceReponseDto.getDate();
 
-            String parameter ="?date=" + date;
+            String parameter = "?date=" + date;
             String fullUrl = apiUrl + parameter;
             System.out.println("주소:" + fullUrl);
 
@@ -54,8 +56,9 @@ public class HourlyPlaceService {
 
             // JSON 결과 파싱
             JsonNode jsonNode = objectMapper.readTree(response.body());
+            return jsonNode;
 
-            // 필요한 데이터 추출
+            /*// 필요한 데이터 추출
             String poi_Id = jsonNode.path("contents").path("poiId").asText();
             String poiName = jsonNode.path("contents").path("poiName").asText();
 
@@ -72,7 +75,7 @@ public class HourlyPlaceService {
                 HourlyPlaceInfoList.add(placeInfo);
             }
 
-            HourlyPlaceInfoList.add(List.of(poi_Id, poiName));
+            HourlyPlaceInfoList.add(List.of(poi_Id, poiName));*/
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -80,6 +83,9 @@ public class HourlyPlaceService {
             throw new RuntimeException(e);
         }
 
-        return HourlyPlaceInfoList;
+
+        }
     }
-}
+
+
+

@@ -39,7 +39,7 @@ public class PlaceService {
         return response.body();
     }
 
-    public List<List<String>> placeInfo() throws IOException {
+    public JsonNode placeInfo() throws IOException {
         //데이터 제공 가능 장소 서비스
         List<List<String>> placeList = new ArrayList<>();
 
@@ -50,27 +50,18 @@ public class PlaceService {
             // JSON 결과 파싱
             JsonNode jsonNode = objectMapper.readTree(responseString);
             System.out.println(responseString);
+            return jsonNode;
 
-            // 필요한 데이터 추출
-            JsonNode contentsArray = jsonNode.path("contents");
-            for (JsonNode content : contentsArray) {
-                String poi_Id = content.path("poiId").asText();
-                String poiName = content.path("poiName").asText();
-                List<String> placeInfo = new ArrayList<>();
-                placeInfo.add(poi_Id);
-                placeInfo.add(poiName);
-                placeList.add(placeInfo);
-            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
-        return placeList;
+
     }
 
-    public List<List<String>> getHourlyPlaceInfo(HourlyPlaceReponseDto hourlyPlaceReponseDto) throws IOException {
+    public JsonNode getHourlyPlaceInfo(HourlyPlaceReponseDto hourlyPlaceReponseDto) throws IOException {
         //실시간 혼잡도 제공 서비스
         List<List<String>> HourlyPlaceInfoList = new ArrayList<>();
         DecimalFormat decimalFormat = new DecimalFormat("0.00000");
@@ -85,28 +76,11 @@ public class PlaceService {
             System.out.println("주소:" + fullUrl);
 
             String responseString = sendGetRequest(fullUrl);
-
             // JSON 결과 파싱
             JsonNode jsonNode = objectMapper.readTree(responseString);
+            return jsonNode;
 
-            // 필요한 데이터 추출
-            String poi_Id = jsonNode.path("contents").path("poiId").asText();
-            String poiName = jsonNode.path("contents").path("poiName").asText();
 
-            // congestion,congestionLevel 값 추출
-            JsonNode rawArray = jsonNode.path("contents").get("raw");
-            for (JsonNode rawNode : rawArray) {
-                double congestionValue = rawNode.path("congestion").asDouble();
-                int congestionLevel = rawNode.path("congestionLevel").asInt();
-                String datetime = rawNode.path("datetime").asText();
-                List<String> placeInfo = new ArrayList<>();
-                placeInfo.add(decimalFormat.format(congestionValue));
-                placeInfo.add(String.valueOf(congestionLevel));
-                placeInfo.add(datetime);
-                HourlyPlaceInfoList.add(placeInfo);
-            }
-
-            HourlyPlaceInfoList.add(List.of(poi_Id, poiName));
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -114,6 +88,37 @@ public class PlaceService {
             throw new RuntimeException(e);
         }
 
-        return HourlyPlaceInfoList;
     }
 }
+// 필요한 데이터 추출
+/*
+    JsonNode contentsArray = jsonNode.path("contents");
+            for (JsonNode content : contentsArray) {
+                    String poi_Id = content.path("poiId").asText();
+                    String poiName = content.path("poiName").asText();
+                    List<String> placeInfo = new ArrayList<>();
+        placeInfo.add(poi_Id);
+        placeInfo.add(poiName);
+        placeList.add(placeInfo);
+        }*/
+
+ /*
+
+    // 필요한 데이터 추출
+    String poi_Id = jsonNode.path("contents").path("poiId").asText();
+    String poiName = jsonNode.path("contents").path("poiName").asText();
+
+    // congestion,congestionLevel 값 추출
+    JsonNode rawArray = jsonNode.path("contents").get("raw");
+            for (JsonNode rawNode : rawArray) {
+                    double congestionValue = rawNode.path("congestion").asDouble();
+                    int congestionLevel = rawNode.path("congestionLevel").asInt();
+                    String datetime = rawNode.path("datetime").asText();
+                    List<String> placeInfo = new ArrayList<>();
+        placeInfo.add(decimalFormat.format(congestionValue));
+        placeInfo.add(String.valueOf(congestionLevel));
+        placeInfo.add(datetime);
+        HourlyPlaceInfoList.add(placeInfo);
+        }
+
+        HourlyPlaceInfoList.add(List.of(poi_Id, poiName));*/

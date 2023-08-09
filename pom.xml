@@ -38,7 +38,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.boot</groupId>ㅎ
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
@@ -54,13 +54,14 @@
             <version>1.18.26</version>
             <scope>compile</scope>
         </dependency>
-    </dependencies>
-
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.12.5</version> <!-- 최신 버전으로 업데이트 가능 -->
 		</dependency>
+    </dependencies>
+
+
 
 
 

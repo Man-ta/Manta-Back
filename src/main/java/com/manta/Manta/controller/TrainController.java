@@ -1,5 +1,6 @@
 package com.manta.Manta.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.manta.Manta.dto.TrainResponseDto;
 import com.manta.Manta.service.TrainService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,21 +24,18 @@ public class TrainController {
     }
 
 
-        @GetMapping("/congestion")
-        public ResponseEntity<List<String>> getTrainInfo(@RequestParam String stationCode,@RequestParam String dow, @RequestParam String hh) {
-            try {
-                TrainResponseDto trainResponseDto = new TrainResponseDto(stationCode, dow, hh);
-                trainResponseDto.setStationCode(stationCode);
-                trainResponseDto.setDow(dow);
-                trainResponseDto.setHh(hh);
-
-
-                List<String> trainInfoList = trainService.getTrainInfo(trainResponseDto);
-                return new ResponseEntity<>(trainInfoList, HttpStatus.OK);
-            } catch (IOException e) {
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+    @GetMapping("/congestion")
+    public ResponseEntity<JsonNode> getTrainInfo(@RequestParam String stationCode, @RequestParam String dow, @RequestParam String hh) {
+        try {
+            TrainResponseDto trainResponseDto = new TrainResponseDto(stationCode, dow, hh);
+            trainResponseDto.setStationCode(stationCode);
+            trainResponseDto.setDow(dow);
+            trainResponseDto.setHh(hh);
+            JsonNode trainInfo = trainService.getTrainInfo(trainResponseDto);
+            return ResponseEntity.ok().body(trainInfo);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
+}
