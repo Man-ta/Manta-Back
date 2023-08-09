@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 
 @CrossOrigin(origins = "*") //cors정책 -> 이게 없으면 통신이 안됨.
 @RestController
@@ -24,19 +23,18 @@ public class TrainController {
     }
 
 
-        @GetMapping("/congestion")
-        public ResponseEntity<JsonNode> getTrainInfo(@RequestParam String stationCode, @RequestParam String dow, @RequestParam String hh) {
-            try {
-                TrainResponseDto trainResponseDto = new TrainResponseDto(stationCode, dow, hh);
-                trainResponseDto.setStationCode(stationCode);
-                trainResponseDto.setDow(dow);
-                trainResponseDto.setHh(hh);
-                JsonNode trainInfo = trainService.getTrainInfo(trainResponseDto);
-                return ResponseEntity.ok().body(trainInfo);
-            } catch (IOException e) {
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+    @GetMapping("/congestion")
+    public ResponseEntity<JsonNode> getTrainInfo(@RequestParam String stationCode, @RequestParam String dow, @RequestParam String hh) {
+        try {
+            TrainResponseDto trainResponseDto = new TrainResponseDto(stationCode, dow, hh);
+            trainResponseDto.setStationCode(stationCode);
+            trainResponseDto.setDow(dow);
+            trainResponseDto.setHh(hh);
+            JsonNode trainInfo = trainService.getTrainInfo(trainResponseDto);
+            return ResponseEntity.ok().body(trainInfo);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
+}

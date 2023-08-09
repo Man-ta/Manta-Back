@@ -3,7 +3,6 @@ package com.manta.Manta.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.manta.Manta.dto.TrainResponseDto;
 import com.manta.Manta.dto.TransitResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,12 +10,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @CrossOrigin(origins = "*") //cors정책 -> 이게 없으면 통신이 안됨.
@@ -29,7 +25,6 @@ public class TransitService {
     }
 
     public JsonNode transitInfo(TransitResponseDto transitResponseDto) throws IOException {
-        List<String> transitInfoList = new ArrayList<>();
 
         try {
             String startX = transitResponseDto.getStartX();
@@ -54,11 +49,8 @@ public class TransitService {
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             System.out.println(response.body());
 
-
             // JSON 결과 파싱
             JsonNode jsonNode = objectMapper.readTree(response.body());
-
-
 
             return jsonNode;
         } catch (IOException e) {

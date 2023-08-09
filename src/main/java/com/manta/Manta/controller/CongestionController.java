@@ -1,5 +1,6 @@
 package com.manta.Manta.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.manta.Manta.dto.CongestionResponseDto;
 import com.manta.Manta.service.CongestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,26 +25,26 @@ public class CongestionController {
 
 
     @GetMapping("/congestion")
-    public ResponseEntity<List<String>> getCongestionInfo(@RequestParam String poiId) {
+    public ResponseEntity<JsonNode> getCongestionInfo(@RequestParam String poiId) {
         // 실시간 장소 혼잡도를 제공
         try {
             CongestionResponseDto congestionResponseDto=new CongestionResponseDto(poiId);
             congestionResponseDto.setPoiId(poiId);
 
-            List<String> placeConList = congestionService.placeConInfo(congestionResponseDto);
+            JsonNode placeConList = congestionService.placeConInfo(congestionResponseDto);
             return new ResponseEntity<>(placeConList, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @GetMapping("/Statistical")
-    public ResponseEntity<List<List<String>>> getStatisticalInfo(@RequestParam String poiId) {
+    public ResponseEntity<JsonNode> getStatisticalInfo(@RequestParam String poiId) {
         //통계성 혼잡도를 제공
         try {
             CongestionResponseDto congestionResponseDto = new CongestionResponseDto(poiId);
             congestionResponseDto.setPoiId(poiId);
 
-            List<List<String>> statisticalList = congestionService.StatisticalnInfo(congestionResponseDto);
+            JsonNode statisticalList = congestionService.StatisticalnInfo(congestionResponseDto);
             return new ResponseEntity<>(statisticalList, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -51,13 +52,13 @@ public class CongestionController {
     }
 
     @GetMapping("/visitor")
-    public ResponseEntity<List<List<String>>> getVisitorCountInfo(@RequestParam String poiId) {
+    public ResponseEntity<JsonNode> getVisitorCountInfo(@RequestParam String poiId) {
         //일자별 추정 방문자수를 제공
         try {
             CongestionResponseDto congestionResponseDto = new CongestionResponseDto(poiId);
             congestionResponseDto.setPoiId(poiId);
 
-            List<List<String>> visitorList = congestionService.getVisitorCountInfo(congestionResponseDto);
+            JsonNode visitorList = congestionService.getVisitorCountInfo(congestionResponseDto);
             return new ResponseEntity<>(visitorList, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

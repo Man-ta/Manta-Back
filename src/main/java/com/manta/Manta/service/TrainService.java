@@ -1,6 +1,5 @@
 package com.manta.Manta.service;
 
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manta.Manta.dto.TrainResponseDto;
@@ -8,11 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import java.io.*;
-import java.net.HttpURLConnection;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -23,8 +20,7 @@ import java.util.List;
 @CrossOrigin(origins = "*") //cors정책 -> 이게 없으면 통신이 안됨.
 
 public class TrainService {
-//    @Autowired
-//    TrainResponseDto trainResponseDto;
+
     private final ObjectMapper objectMapper; // Jackson ObjectMapper 주입
 
     @Autowired
@@ -33,7 +29,6 @@ public class TrainService {
     }
 
     public JsonNode getTrainInfo(TrainResponseDto trainResponseDto) throws IOException {
-        List<String> trainInfoList = new ArrayList<>();
 
         try {
             String stationCode = trainResponseDto.getStationCode();
@@ -61,8 +56,6 @@ public class TrainService {
 
             // JSON 결과 파싱
             JsonNode jsonNode = objectMapper.readTree(response.body());
-
-
 
             return jsonNode;
         } catch (IOException e) {
