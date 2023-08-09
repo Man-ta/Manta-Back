@@ -77,22 +77,3 @@ public class PoiSearchService {
 
     }
 }
-/*for (JsonNode poiNode : jsonNode.path("searchPoiInfo").path("pois").path("poi")) {
-                List<String> poiInfo = new ArrayList<>();
-                poiInfo.add(poiNode.path("id").asText());
-                poiInfo.add(poiNode.path("pkey").asText());
-
-                for (JsonNode newAddressNode : poiNode.path("newAddressList").path("newAddress")) {
-                    poiInfo.add(newAddressNode.path("centerLat").asText());
-                    poiInfo.add(newAddressNode.path("centerLon").asText());
-                    poiInfo.add(newAddressNode.path("frontLat").asText());
-                    poiInfo.add(newAddressNode.path("frontLon").asText());
-                    poiInfo.add(newAddressNode.path("roadName").asText());
-                    poiInfo.add(newAddressNode.path("roadId").asText());
-                    poiInfo.add(newAddressNode.path("fullAddressRoad").asText());
-
-
-                }
-
-                resultList.add(poiInfo);
-            }*/

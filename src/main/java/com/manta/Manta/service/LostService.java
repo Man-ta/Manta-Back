@@ -22,6 +22,7 @@ public class LostService {
     }
 
     public JsonNode getLostInfo(LostDto lostDto) throws IOException, InterruptedException {
+        //분실물 찾기 서비스
         try {
             String key = lostDto.getKey();
             String type = lostDto.getType();

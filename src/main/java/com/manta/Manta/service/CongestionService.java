@@ -41,13 +41,8 @@ public class CongestionService {
         return response.body();
     }
 
-
     public JsonNode placeConInfo(CongestionResponseDto congestionResponseDto) throws IOException {
         // 실시간 장소 혼잡도를 제공하는 서비스
-        List<String> placeConList = new ArrayList<>();
-        DecimalFormat decimalFormat = new DecimalFormat("0.00000");
-
-
         try {
             String poiId = congestionResponseDto.getPoiId();
             String apiUrl = "https://apis.openapi.sk.com/puzzle/congestion/rltm/pois/" + poiId;
@@ -58,8 +53,6 @@ public class CongestionService {
             return jsonNode;
         }
 
-
-
         catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
@@ -68,7 +61,6 @@ public class CongestionService {
 
 
     }
-
 
     public JsonNode StatisticalnInfo(CongestionResponseDto congestionResponseDto) throws IOException {
         // 통계성 장소 혼잡도를 제공하는 서비스
@@ -93,7 +85,6 @@ public class CongestionService {
 
     }
 
-
     public JsonNode getVisitorCountInfo(CongestionResponseDto congestionResponseDto) throws IOException {
         // 일자별 추정 방문자수를 제공하는 서비스
         List<List<String>> visitorList = new ArrayList<>();
@@ -106,8 +97,6 @@ public class CongestionService {
             // JSON 결과 파싱
             JsonNode jsonNode = objectMapper.readTree(responseString);
 
-
-
             return jsonNode;
 
         } catch (IOException e) {
@@ -117,51 +106,3 @@ public class CongestionService {
         }
     }
 }
-   /* String poi_Id = jsonNode.path("contents").path("poiId").asText();
-    String poiName = jsonNode.path("contents").path("poiName").asText();
-
-    JsonNode statArray = jsonNode.path("contents").path("stat");
-            for (JsonNode statNode : statArray) {
-                    double congestionValue = statNode.path("congestion").asDouble();
-                    String congestionLevel = statNode.path("congestionLevel").toString();
-                    String dow = statNode.path("dow").toString().replaceAll("\"", "");
-                    String hh = statNode.path("hh").toString().replaceAll("\"", "");
-
-                    List<String> congestionData = new ArrayList<>();
-        congestionData.add(decimalFormat.format(congestionValue));
-        congestionData.add(congestionLevel);
-        congestionData.add(dow);
-        congestionData.add(hh);
-
-        StatisticalnList.add(congestionData);
-        }
-
-        List<String> poiInfo = new ArrayList<>();
-        poiInfo.add(poi_Id);
-        poiInfo.add(poiName);
-        StatisticalnList.add(poiInfo);
-*/
-
- /*   // 필요한 데이터 추출
-    String poi_Id = jsonNode.path("contents").path("poiId").asText();
-    String poiName = jsonNode.path("contents").path("poiName").asText();
-
-    JsonNode rawArray = jsonNode.path("contents").path("raw");
-            if (rawArray != null) {
-                    for (JsonNode rawNode : rawArray) {
-                    String approxVisitorCount = rawNode.path("approxVisitorCount").toString();
-                    String date = rawNode.path("date").asText();
-
-                    List<String> visitorInfo = new ArrayList<>();
-        visitorInfo.add(String.valueOf(approxVisitorCount));
-        visitorInfo.add(date);
-
-        visitorList.add(visitorInfo);
-        }
-        }
-
-        // poiId와 poiName을 마지막으로 추가
-        List<String> poiInfo = new ArrayList<>();
-        poiInfo.add(poi_Id);
-        poiInfo.add(poiName);
-        visitorList.add(poiInfo);*/

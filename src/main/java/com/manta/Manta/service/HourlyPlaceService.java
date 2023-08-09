@@ -13,9 +13,6 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @CrossOrigin(origins = "*")
@@ -29,8 +26,6 @@ public class HourlyPlaceService {
 
     //사용자가 조회한 장소의 시간대별 혼잡도를 제공하는 서비스
     public JsonNode getHourlyPlaceInfo(HourlyPlaceReponseDto hourlyPlaceReponseDto) throws IOException {
-        List<List<String>> HourlyPlaceInfoList = new ArrayList<>();
-        DecimalFormat decimalFormat = new DecimalFormat("0.00000");
 
         try {
             String poiId = hourlyPlaceReponseDto.getPoiId();
@@ -57,25 +52,6 @@ public class HourlyPlaceService {
             // JSON 결과 파싱
             JsonNode jsonNode = objectMapper.readTree(response.body());
             return jsonNode;
-
-            /*// 필요한 데이터 추출
-            String poi_Id = jsonNode.path("contents").path("poiId").asText();
-            String poiName = jsonNode.path("contents").path("poiName").asText();
-
-            // congestion,congestionLevel 값 추출
-            JsonNode rawArray = jsonNode.path("contents").get("raw");
-            for (JsonNode rawNode : rawArray) {
-                double congestionValue = rawNode.path("congestion").asDouble();
-                int congestionLevel = rawNode.path("congestionLevel").asInt();
-                String datetime = rawNode.path("datetime").asText();
-                List<String> placeInfo = new ArrayList<>();
-                placeInfo.add(decimalFormat.format(congestionValue));
-                placeInfo.add(String.valueOf(congestionLevel));
-                placeInfo.add(datetime);
-                HourlyPlaceInfoList.add(placeInfo);
-            }
-
-            HourlyPlaceInfoList.add(List.of(poi_Id, poiName));*/
 
         } catch (IOException e) {
             throw new RuntimeException(e);
