@@ -24,6 +24,6 @@ public class TrainResponseDto {
 //    private String prevStationName;
     private String dow; //검색 기준 요일
     private String hh; //검색 기준 시간
-//    private String mm; //검색 기준 분 (10분단위)
+    //private String mm; //검색 기준 분 (10분단위)
 
 }
