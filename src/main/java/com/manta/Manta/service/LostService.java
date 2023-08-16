@@ -14,6 +14,7 @@ import java.net.http.HttpResponse;
 
 @Service
 public class LostService {
+
     private final ObjectMapper objectMapper;
 
     @Autowired
@@ -29,7 +30,7 @@ public class LostService {
             String service = lostDto.getService();
             String start_Index = lostDto.getStart_Index();
             String end_Index = lostDto.getEnd_Index();
-            String id = lostDto.getId();
+           // String id = lostDto.getId();
             String date = lostDto.getDate();
 
             String apiUrl = "http://openapi.seoul.go.kr:8088";

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manta.Manta.dto.TrainResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -20,6 +21,8 @@ import java.util.List;
 @CrossOrigin(origins = "*") //cors정책 -> 이게 없으면 통신이 안됨.
 
 public class TrainService {
+    @Value("${SK-KEY}")
+    private String key;
 
     private final ObjectMapper objectMapper; // Jackson ObjectMapper 주입
 
@@ -41,13 +44,12 @@ public class TrainService {
             String fullUrl = apiUrl + parameter;
             System.out.println("주소:" + fullUrl);
 
-            URL url = new URL(fullUrl);
             //HttpRequest 라이브러리
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(fullUrl))
                     .header("accept", "application/json")
                     .header("Content-Type", "application/json")
-                    .header("appkey", "GIus98D87O1NAVDh5d0iB7BRUTtA7NX77DbSioES")
+                    .header("appkey", key)
                     .method("GET", HttpRequest.BodyPublishers.noBody())
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());

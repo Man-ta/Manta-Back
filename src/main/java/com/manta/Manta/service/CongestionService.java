@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manta.Manta.dto.CongestionResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -19,6 +20,9 @@ import java.util.List;
 @Service
 @CrossOrigin(origins = "*")
 public class CongestionService {
+    @Value("${SK-KEY}")
+    private String key;
+
     private final ObjectMapper objectMapper; // Jackson ObjectMapper 주입
 
     @Autowired
@@ -31,7 +35,7 @@ public class CongestionService {
                 .uri(URI.create(fullUrl))
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
-                .header("appkey", "GIus98D87O1NAVDh5d0iB7BRUTtA7NX77DbSioES")
+                .header("appkey", key)
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
 
@@ -62,11 +66,8 @@ public class CongestionService {
 
     }
 
-    public JsonNode StatisticalnInfo(CongestionResponseDto congestionResponseDto) throws IOException {
+    public JsonNode getStatisticalnInfo(CongestionResponseDto congestionResponseDto) throws IOException {
         // 통계성 장소 혼잡도를 제공하는 서비스
-        List<List<String>> StatisticalnList = new ArrayList<>();
-        DecimalFormat decimalFormat = new DecimalFormat("0.00000");
-
         try {
             String poiId = congestionResponseDto.getPoiId();
             String apiUrl = "https://apis.openapi.sk.com/puzzle/congestion/stat/hourly/pois/" + poiId;
@@ -87,7 +88,6 @@ public class CongestionService {
 
     public JsonNode getVisitorCountInfo(CongestionResponseDto congestionResponseDto) throws IOException {
         // 일자별 추정 방문자수를 제공하는 서비스
-        List<List<String>> visitorList = new ArrayList<>();
         try {
             String poiId = congestionResponseDto.getPoiId();
             String apiUrl = "https://apis.openapi.sk.com/puzzle/visitor-count/raw/daily/pois/" + poiId;

@@ -3,6 +3,7 @@ package com.manta.Manta.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,6 +14,8 @@ import java.net.http.HttpResponse;
 
 @Service
 public class PlaceService {
+    @Value("${SK-KEY}")
+    private String key;
     private final ObjectMapper objectMapper;
 
     @Autowired
@@ -25,7 +28,7 @@ public class PlaceService {
                 .uri(URI.create(fullUrl))
                 .header("accept", "application/json")
                 .header("Content-Type", "application/json")
-                .header("appkey", "2g1pkfbjAB3LXPV8ymxV87iexe1q2KZbzmqgnbIf")
+                .header("appkey", key)
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
 

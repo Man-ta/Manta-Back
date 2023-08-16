@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manta.Manta.dto.PoiDetailDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -15,6 +16,8 @@ import java.net.http.HttpResponse;
 
 @Service
 public class PoiDetailService {
+    @Value("${SK-KEY}")
+    private String key;
     private final ObjectMapper objectMapper;
 
     @Autowired
@@ -39,12 +42,11 @@ public class PoiDetailService {
             String fullUrl = apiUrl + parameter;
 
 
-            URL url = new URL(fullUrl);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(fullUrl))
                     .header("accept", "application/json")
                     .header("Content-Type", "application/json")
-                    .header("appkey", "GIus98D87O1NAVDh5d0iB7BRUTtA7NX77DbSioES")
+                    .header("appkey", key)
                     .method("GET", HttpRequest.BodyPublishers.noBody())
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
