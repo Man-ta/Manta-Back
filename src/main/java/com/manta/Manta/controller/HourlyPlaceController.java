@@ -27,7 +27,7 @@ public class HourlyPlaceController {
     }
 
     @GetMapping("/hourly")
-    public ResponseEntity<JsonNode> HourlyPlaceInfo(@RequestParam String poiId, @RequestParam String date) {
+    public ResponseEntity<JsonNode> getHourlyPlaceInfo(@RequestParam String poiId, @RequestParam String date) {
         //사용자가 조회한 장소의 시간대별 혼잡도를 제공하는 컨트롤러
         try {
             HourlyPlaceReponseDto hourlyPlaceReponseDto = new HourlyPlaceReponseDto(poiId, date);

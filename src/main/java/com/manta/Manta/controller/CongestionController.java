@@ -44,7 +44,7 @@ public class CongestionController {
             CongestionResponseDto congestionResponseDto = new CongestionResponseDto(poiId);
             congestionResponseDto.setPoiId(poiId);
 
-            JsonNode statisticalList = congestionService.StatisticalnInfo(congestionResponseDto);
+            JsonNode statisticalList = congestionService.getStatisticalnInfo(congestionResponseDto);
             return new ResponseEntity<>(statisticalList, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

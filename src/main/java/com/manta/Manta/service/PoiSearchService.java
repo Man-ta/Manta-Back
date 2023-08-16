@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manta.Manta.dto.PoiSearchDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,6 +18,8 @@ import java.util.List;
 
 @Service
 public class PoiSearchService {
+    @Value("${SK-KEY}")
+    private String key;
     private final ObjectMapper objectMapper;
 
     @Autowired
@@ -26,7 +29,6 @@ public class PoiSearchService {
 
     public JsonNode getPoiInfo(PoiSearchDto poiSearchDto) throws IOException {
         //장소(POI) 통합 검색 서비스
-        List<List<String>> resultList = new ArrayList<>();
 
         try {
             String version = poiSearchDto.getVersion();
@@ -52,13 +54,11 @@ public class PoiSearchService {
                     "&count=" + count + "&multiPoint=" + multiPoint + "&poiGroupYn=" + poiGroupYn;
             String fullUrl = apiUrl + parameter;
 
-
-            URL url = new URL(fullUrl);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(fullUrl))
                     .header("accept", "application/json")
                     .header("Content-Type", "application/json")
-                    .header("appkey", "GIus98D87O1NAVDh5d0iB7BRUTtA7NX77DbSioES")
+                    .header("appkey", key)
                     .method("GET", HttpRequest.BodyPublishers.noBody())
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
